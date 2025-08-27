@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>k8s-webui</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.48.0/min/vs/editor/editor.main.css"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+    <div class="main">
+        <div class="history">
+            <div class="history-header">
+                <b>History</b>
+                <button id="clear_history_btn" class="clear-history-btn">Clear</button>
+            </div>
+            <div class="past-commands" id="past_commands">
+            </div>
+            <div class="config">
+                Context <select name="contexts" id="contexts"></select>
+                Namespace <select name="namespaces" id="namespaces"></select>
+            </div>
+        </div>
+        <div class="current">
+            <div id="output"></div>
+            <input type="text" id="command" class="runner" placeholder="get pod -l app=nginx" autofocus />
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.48.0/min/vs/loader.min.js"
+        integrity="sha512-ZG31AN9z/CQD1YDDAK4RUAvogwbJHv6bHrumrnMLzdCrVu4HeAqrUX7Jsal/cbUwXGfaMUNmQU04tQ8XXl5Znw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/main.mjs"></script>
+</body>
+
+</html>
