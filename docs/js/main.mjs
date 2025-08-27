@@ -7,15 +7,39 @@ Select a context, namespace, and type a command to get started.`
 const pastCommandsDiv = document.getElementById("past_commands");
 
 async function get_contexts() {
-    const response = await fetch(`${SERVER}/contexts`);
-    const contexts = await response.json();
-    return contexts;
+    try {
+        const response = await fetch(`${SERVER}/contexts`);
+        const contexts = await response.json();
+        return contexts;
+    }
+    catch (err) {
+        showServerErrorDialog(err);
+        throw err;
+    }
 }
 
 async function get_namespaces(context) {
-    const response = await fetch(`${SERVER}/namespaces?context=${context}`);
-    const namespaces = await response.json();
-    return namespaces;
+    try {
+        const response = await fetch(`${SERVER}/namespaces?context=${context}`);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        const namespaces = await response.json();
+        return namespaces;
+    } catch (err) {
+        showServerErrorDialog(err);
+        throw err;
+    }
+}
+
+function showServerErrorDialog(error) {
+    const dialog = document.getElementById("server-error-dialog");
+    const msg = dialog.querySelector(".server-error-dialog-msg");
+    msg.innerHTML = `Could not connect to the backend server.<br><br><b>The server must be running for the web UI to work.</b><br><br>Error details:<br><pre style='text-align:left;white-space:pre-wrap;background:#f8f8f8;padding:0.5em;border-radius:4px;'>${error}</pre>`;
+    dialog.style.display = "flex";
+    dialog.querySelector(".server-error-close-btn").onclick = () => {
+        dialog.style.display = "none";
+    };
 }
 
 function get_selected_context() {
