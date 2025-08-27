@@ -7,9 +7,11 @@ Select a context, namespace, and type a command to get started.`
 const pastCommandsDiv = document.getElementById("past_commands");
 
 async function get_contexts() {
+    choicesContext.disable();
     try {
         const response = await fetch(`${SERVER}/contexts`);
         const contexts = await response.json();
+        choicesContext.enable();
         return contexts;
     }
     catch (err) {
@@ -50,6 +52,10 @@ function get_selected_namespace() {
     return choicesNamespace.getValue(true);
 }
 
+function get_kubectl_command(command, context, namespace) {
+    return `kubectl ${command} --context ${context} --namespace ${namespace}`;
+}
+
 function update_editor(command, context, namespace, data) {
     let extraText = ""
     if (data.stderr && data.stderr.trim() !== "") {
@@ -62,7 +68,7 @@ ${data.stderr}
         extraText += `Exit code: ${data.exit_code}`;
     }
 
-    window.editor.setValue(`kubectl ${command} --context ${context} --namespace ${namespace}
+    window.editor.setValue(get_kubectl_command(command, context, namespace) + `
 -------
 ${data.stdout}
 -------
@@ -102,6 +108,9 @@ commandInput.addEventListener("keypress", function (event) {
         const context = get_selected_context();
         const namespace = get_selected_namespace();
 
+        // set editor text to command loading
+        window.editor.setValue(`Running command "${get_kubectl_command(command, context, namespace)}"...`);
+
         fetch(`${SERVER}/run-cmd`, {
             method: "POST",
             headers: {
@@ -119,6 +128,9 @@ commandInput.addEventListener("keypress", function (event) {
 document.addEventListener("DOMContentLoaded", async function () {
     window.choicesContext = new Choices(contextSelect);
     window.choicesNamespace = new Choices(namespaceSelect);
+
+    choicesContext.disable();
+    choicesNamespace.disable();
 
     // Load history from localStorage
     let history = JSON.parse(localStorage.getItem("commandHistory") || "[]");
@@ -144,10 +156,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 async function load_namespaces() {
     const selectedContext = get_selected_context();
-
+    choicesNamespace.disable();
     const namespaces = await get_namespaces(selectedContext);
     console.log("Selected context:", selectedContext, "Loaded namespaces", namespaces);
     choicesNamespace.setChoices(namespaces.map((n, index) => ({ value: n, label: n, selected: index === 0 })), 'value', 'label', true, replaceChoices = true);
+    choicesNamespace.enable();
 }
 
 contextSelect.addEventListener("change", async function (e) {
