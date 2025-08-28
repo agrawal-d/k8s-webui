@@ -57,7 +57,9 @@ const App = () => {
       get_namespaces(currentContext).then((result) => {
         if (Array.isArray(result)) {
           setNamespace(result.map((ns) => ({ value: ns, label: ns })));
-          setCurrentNamespace(result[0]);
+          if (currentNamespace === null || !result.includes(currentNamespace)) {
+            setCurrentNamespace(result[0]);
+          }
         } else {
           setNamespace([]);
           setError(result.message);
