@@ -8,6 +8,7 @@ async function sleep2s() {
 
 export async function get_contexts(): Promise<string[] | Error> {
   try {
+    await sleep2s();
     const response = await fetch(`${SERVER}/contexts`);
     const contexts = await response.json();
     return contexts;
@@ -20,6 +21,7 @@ export async function get_namespaces(
   context: string
 ): Promise<string[] | Error> {
   try {
+    await sleep2s();
     const response = await fetch(`${SERVER}/namespaces?context=${context}`);
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -35,6 +37,7 @@ export async function run_command(
   data: CommandData
 ): Promise<CommandResult | Error> {
   try {
+    await sleep2s();
     const response = await fetch(`${SERVER}/run-cmd`, {
       method: "POST",
       headers: {
