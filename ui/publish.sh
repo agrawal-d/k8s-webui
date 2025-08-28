@@ -20,6 +20,8 @@ npm run build
 
 mv build ../docs
 
+git branch -D publish-branch
+
 git checkout -b publish-branch
 
 git add ../
