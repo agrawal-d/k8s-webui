@@ -22,7 +22,7 @@ mv build ../docs
 
 git checkout -b publish-branch
 
-git add ../docs
+git add ../
 
 git commit -m "Publish $(date)"
 
